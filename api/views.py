@@ -1,10 +1,8 @@
-from django.shortcuts import render, redirect #type: ignore
-from django.contrib import messages #type: ignore
+from django.contrib.auth.models import User
 from django.http import HttpResponse #type: ignore
 from rest_framework import status #type: ignore
 from rest_framework.views import APIView #type: ignore
 from rest_framework.response import Response #type: ignore
-import csv
 
 from .models import Subject, Category, Learn, PracticeSection, Questions, TestData
 from .serializer import SubjectSerializer, CategorySerializer, LearnSerializer, PracticeSectionSerializer, QuestionsSerializer, TestDataSerializer
@@ -13,6 +11,12 @@ from .serializer import SubjectSerializer, CategorySerializer, LearnSerializer, 
 def index(request):
     return HttpResponse("Welcome to the LangX API...")
 
+## Users
+class UserViewSet(APIView):
+    def post(self, request, *args, **kwargs):
+        ### TO BUILD OUT USER FORM DATA ###
+        print(request.data)
+        return Response(request.data)
 
 ### Categories
 class SubjectViewSet(APIView):
