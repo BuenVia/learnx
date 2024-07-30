@@ -1,38 +1,63 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class GrammarCategory(models.Model):
+# Subject
+# Category
+## Notes
+## Flash
+## Test
+
+class Subject(models.Model):
     name = models.CharField(max_length=90)
     description = models.CharField(max_length=255)
-    
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+
     class Meta:
-        db_table = "grammarcategory"
+        db_table = "subject"
+
+    def __str__(self) -> str:
+        return f"Subject: {self.name}"
+
+class Category(models.Model):
+    name = models.CharField(max_length=90)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "category"
 
     def __str__(self) -> str:
         return f"Category: {self.name}"
 
-class GrammarSubCategory(models.Model):
+# Learn
+class Learn(models.Model):
     name = models.CharField(max_length=90)
-    category = models.ForeignKey(GrammarCategory, on_delete=models.CASCADE)
+    author = models.CharField(max_length=90)
+    body = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     
     class Meta:
-        db_table = "grammarsubcategory"
+        db_table = "learn"
 
     def __str__(self) -> str:
-        return f"Sub-category: {self.name}"
+        return f"Learn: {self.name}"
 
-# Tests
-class GrammarTestSection(models.Model):
+# Practice
+class PracticeSection(models.Model):
     name = models.CharField(max_length=10)
     instruction = models.TextField(blank=True)
-    sub_category = models.ForeignKey(GrammarSubCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     
     class Meta:
-        db_table = "grammartestsection"
+        db_table = "practice_section"
 
     def __str__(self) -> str:
-        return f"Test Section: {self.name}"
+        return f"Practice Section: {self.name}"
 
-class GrammarTest(models.Model):
+class Questions(models.Model):
     test_type = models.IntegerField()
     question = models.CharField(max_length=255)
     answer = models.CharField(max_length=255)
@@ -40,44 +65,24 @@ class GrammarTest(models.Model):
     option_two = models.CharField(max_length=255, blank=True)
     option_three = models.CharField(max_length=255, blank=True)
     feedback = models.CharField(max_length=255, blank=True)
-    test_section = models.ForeignKey(GrammarTestSection, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    practice_section = models.ForeignKey(PracticeSection, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = "grammartests"
+        db_table = "questions"
 
     def __str__(self) -> str:
-        return f"Test: {self.question}" 
+        return f"Practice Question: {self.question}" 
 
-# Blog
-class GrammarBlog(models.Model):
-    name = models.CharField(max_length=90)
-    author = models.CharField(max_length=90)
-    body = models.TextField()
-    date_created = models.DateTimeField(auto_now_add=True)
-    sub_category = models.ForeignKey(GrammarSubCategory, on_delete=models.CASCADE)
-    
-    class Meta:
-        db_table = "grammarblog"
-
-    def __str__(self) -> str:
-        return f"Blog: {self.name}"
-
-class GrammarBlogAssessment(models.Model):
-    question = models.CharField(max_length=255)
-    answer = models.CharField(max_length=45)
-    blog = models.ForeignKey(GrammarBlog, on_delete=models.CASCADE)
-    
-    class Meta:
-        db_table = "grammarblogassessment"
-
-    def __str__(self) -> str:
-        return f"Blog Assessment: {self.question}"
-
-class Vocab(models.Model):
-    pass
+# Test
+class TestData(models.Model):
+    date_taken = models.DateTimeField(auto_now_add=False)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        pass
+        db_table = "test_data"
 
     def __str__(self) -> str:
-        pass
+        return f"Test Data: {self.question}" 

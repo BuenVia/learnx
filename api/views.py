@@ -6,102 +6,73 @@ from rest_framework.views import APIView #type: ignore
 from rest_framework.response import Response #type: ignore
 import csv
 
-from .models import GrammarCategory, GrammarSubCategory, GrammarTestSection, GrammarTest, GrammarBlog, GrammarBlogAssessment
-from .serializer import GrammarCategorySerializer, GrammarSubCategorySerializer, GrammarTestSectionSerializer, GrammarTestSerializer, GrammarBlogSerializer, GrammarBlogAssessmentSerializer
-from .forms import CSVImportForm
+from .models import Subject, Category, Learn, PracticeSection, Questions, TestData
+from .serializer import SubjectSerializer, CategorySerializer, LearnSerializer, PracticeSectionSerializer, QuestionsSerializer, TestDataSerializer
 
 # Create your views here.
 def index(request):
     return HttpResponse("Welcome to the LangX API...")
 
-def bulk_import_view(request):
-    if request.method == 'POST':
-        form = CSVImportForm(request.POST, request.FILES)
-        if form.is_valid():
-            csv_file = request.FILES['csv_file']
-            decoded_file = csv_file.read().decode('utf-8').splitlines()
-            reader = csv.DictReader(decoded_file)
-            for row in reader:
-                GrammarTest.objects.create(
-                    test_type=row['test_type'],
-                    instruction=row['instruction'],
-                    question=row['question'],
-                    answer=row['answer'],
-                    option_one=row['option_one'],
-                    option_two=row['option_two'],
-                    option_three=row['option_three'],
-                    feedback=row['feedback'],
-                    test_section_id=row['test_section']
-                )
-            messages.success(request, "Bulk import successful.")
-            return redirect('admin:myapp_grammartest_changelist')
-    else:
-        form = CSVImportForm()
-    
-    context = {
-        'form': form
-    }
-    return render(request, 'admin/bulk_import.html', context)
 
 ### Categories
-class GrammarCategoryViewSet(APIView):
+class SubjectViewSet(APIView):
     def get(self, request, *args, **kwargs):
-        gcs = GrammarCategory.objects.all()
-        serializer = GrammarCategorySerializer(gcs, many=True)
+        subjects = Subject.objects.all()
+        serializer = SubjectSerializer(subjects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class GrammarSubCategoriesViewSet(APIView):
+class CategoriesViewSet(APIView):
     def get(self, request, *args, **kwargs):
-        gscs = GrammarSubCategory.objects.all()
-        serializer = GrammarSubCategorySerializer(gscs, many=True)
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class GrammarSubCategoryViewSet(APIView):
+class CategoryViewSet(APIView):
     def get(self, request, id, *args, **kwargs):
-        gscs = GrammarSubCategory.objects.filter(category=id)
-        serializer = GrammarSubCategorySerializer(gscs, many=True)
+        categories = Category.objects.filter(subject=id)
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+### Learn
+class LearnViewSet(APIView):
+    def get(self, request, id, *args, **kwargs):
+        learn = Learn.objects.filter(category=id)
+        serializer = LearnSerializer(learn, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-### TESTS
-class GrammarTestSectionsViewSet(APIView):
+class LearnPageViewSet(APIView):
     def get(self, request, id, *args, **kwargs):
-        gts = GrammarTestSection.objects.filter(sub_category=id)
-        serializer = GrammarTestSectionSerializer(gts, many=True)
+        learn = Learn.objects.filter(id=id)
+        serializer = LearnSerializer(learn, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+### Practice
+class PracticeSectionsViewSet(APIView):
+    def get(self, request, id, *args, **kwargs):
+        psecs = PracticeSection.objects.filter(category=id)
+        serializer = PracticeSectionSerializer(psecs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class GrammarTestSectionViewSet(APIView):
+class PracticeSectionViewSet(APIView):
     def get(self, request, id, *args, **kwargs):
-        gt = GrammarTestSection.objects.filter(id=id)
-        serializer = GrammarTestSectionSerializer(gt, many=True)
+        psec = PracticeSection.objects.filter(id=id)
+        serializer = PracticeSectionSerializer(psec, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class GrammarTestsViewSet(APIView):
+class QuestionsViewSet(APIView):
     def get(self, request, id, *args, **kwargs):
-        gt = GrammarTest.objects.all()
-        serializer = GrammarTestSerializer(gt, many=True)
+        questions = Questions.objects.filter(practice_section=id)
+        serializer = QuestionsSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class GrammarTestViewSet(APIView):
+### Test
+class TestDataViewSet(APIView):
     def get(self, request, id, *args, **kwargs):
-        gt = GrammarTest.objects.filter(test_section=id)
-        serializer = GrammarTestSerializer(gt, many=True)
+        test_data = TestData.objects.filter(category=id)
+        serializer = TestDataSerializer(test_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-### BLOGS
-class GrammarBlogsViewSet(APIView):
-    def get(self, request, id, *args, **kwargs):
-        gbs = GrammarBlog.objects.all()
-        serializer = GrammarBlogSerializer(gbs, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-class GrammarBlogViewSet(APIView):
-    def get(self, request, id, *args, **kwargs):
-        gb = GrammarBlog.objects.filter(sub_category=id)
-        serializer = GrammarBlogSerializer(gb, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-class GrammarAssessmentViewSet(APIView):
-    def get(self, request, id, *args, **kwargs):
-        gas = GrammarBlogAssessment.objects.filter(blog=id)
-        serializer = GrammarBlogAssessmentSerializer(gas, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
