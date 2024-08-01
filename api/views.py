@@ -1,22 +1,22 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponse #type: ignore
-from rest_framework import status #type: ignore
+from rest_framework import status, generics #type: ignore
 from rest_framework.views import APIView #type: ignore
 from rest_framework.response import Response #type: ignore
+from rest_framework.permissions import AllowAny
 
 from .models import Subject, Category, Learn, PracticeSection, Questions, TestData
-from .serializer import SubjectSerializer, CategorySerializer, LearnSerializer, PracticeSectionSerializer, QuestionsSerializer, TestDataSerializer
+from .serializer import SubjectSerializer, CategorySerializer, LearnSerializer, PracticeSectionSerializer, QuestionsSerializer, TestDataSerializer, UserSerializer
 
 # Create your views here.
 def index(request):
     return HttpResponse("Welcome to the LangX API...")
 
 ## Users
-class UserViewSet(APIView):
-    def post(self, request, *args, **kwargs):
-        ### TO BUILD OUT USER FORM DATA ###
-        print(request.data)
-        return Response(request.data)
+class UserViewSet(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (AllowAny, )
 
 ### Categories
 class SubjectViewSet(APIView):
