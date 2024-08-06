@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
                 last_name=validated_data['last_name']
             )
             user.set_password(validated_data['password'])
+            user.is_active = True  # Ensure the user is active
             user.save()
             return user
 
