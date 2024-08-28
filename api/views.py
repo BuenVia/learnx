@@ -3,7 +3,7 @@ from django.http import HttpResponse #type: ignore
 from rest_framework import status, generics #type: ignore
 from rest_framework.views import APIView #type: ignore
 from rest_framework.response import Response #type: ignore
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny #type: ignore
 
 from .models import Subject, Category, Learn, PracticeSection, Questions, TestData
 from .serializer import SubjectSerializer, CategorySerializer, LearnSerializer, PracticeSectionSerializer, QuestionsSerializer, TestDataSerializer, UserSerializer
