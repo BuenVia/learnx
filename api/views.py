@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponse #type: ignore
+from django.shortcuts import get_object_or_404
 from rest_framework import status, generics #type: ignore
 from rest_framework.views import APIView #type: ignore
 from rest_framework.response import Response #type: ignore
@@ -20,22 +21,87 @@ class UserViewSet(generics.CreateAPIView):
 
 ### Categories
 class SubjectViewSet(APIView):
-    def get(self, request, *args, **kwargs):
-        subjects = Subject.objects.all()
-        serializer = SubjectSerializer(subjects, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(self, request, pk=None, *args, **kwargs):
+        # Filter subjects by the logged-in user
+        user_id = request.query_params.get('user_id')
+        if pk is not None:
+            # Retrieve a single subject associated with the user by its ID
+            subject = get_object_or_404(Subject, pk=pk, user_id=user_id)
+            serializer = SubjectSerializer(subject)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Retrieve all subjects associated with the user
+            subjects = Subject.objects.filter(user_id=user_id)
+            serializer = SubjectSerializer(subjects, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+   
+    def post(self, request, *args, **kwargs):
+        serializer = SubjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, *args, **kwargs):
+        try:
+            subject = Subject.objects.get(pk=kwargs['pk'])
+        except Subject.DoesNotExist:
+            return Response({"error": "Subject not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = SubjectSerializer(subject, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            subject = Subject.objects.get(pk=kwargs['pk'])
+        except Subject.DoesNotExist:
+            return Response({"error": "Subject not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        subject.delete()
+        return Response({"message": "Subject deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 class CategoriesViewSet(APIView):
-    def get(self, request, *args, **kwargs):
-        categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(self, request, pk=None, *args, **kwargs):
+        user_id = request.query_params.get('user_id')
+        # Filter categories by the logged-in user
+        if pk is not None:
+            # Retrieve a single category associated with the user by its ID
+            category = get_object_or_404(Category, pk=pk, user_id=user_id)
+            serializer = CategorySerializer(category)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Retrieve all categories associated with the user
+            categories = Category.objects.filter(user_id=user_id)
+            serializer = CategorySerializer(categories, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, *args, **kwargs):
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CategoryViewSet(APIView):
-    def get(self, request, id, *args, **kwargs):
-        categories = Category.objects.filter(subject=id)
-        serializer = CategorySerializer(categories, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def put(self, request, pk, *args, **kwargs):
+        category = get_object_or_404(Category, pk=pk)
+        serializer = CategorySerializer(category, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, *args, **kwargs):
+        category = get_object_or_404(Category, pk=pk)
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+# class CategoryViewSet(APIView):
+#     def get(self, request, id, *args, **kwargs):
+#         categories = Category.objects.filter(subject=id)
+#         serializer = CategorySerializer(categories, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 ### Learn
 class LearnViewSet(APIView):

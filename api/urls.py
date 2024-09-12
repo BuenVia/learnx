@@ -11,10 +11,13 @@ urlpatterns = [
     # JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # Subjects
+    path('api/subject/', views.SubjectViewSet.as_view()),
+    path('api/subject/<int:pk>', views.SubjectViewSet.as_view()),
     # Categories
-    path('api/subject', views.SubjectViewSet.as_view()),
-    path('api/category/', views.CategoriesViewSet.as_view()),
-    path('api/category/<id>', views.CategoryViewSet.as_view()),
+    path('api/categories/', views.CategoriesViewSet.as_view(), name='category-list'),
+    path('api/categories/<int:pk>/', views.CategoriesViewSet.as_view(), name='category-detail'),
+    # path('api/category/<id>', views.CategoryViewSet.as_view()),
     # Learn
     path('api/learn/<id>', views.LearnViewSet.as_view()),
     path('api/learn/page/<id>', views.LearnPageViewSet.as_view()),
