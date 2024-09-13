@@ -67,6 +67,7 @@ class CategoriesViewSet(APIView):
         user_id = request.query_params.get('user_id')
         # Filter categories by the logged-in user
         if pk is not None:
+            print(pk)
             # Retrieve a single category associated with the user by its ID
             category = get_object_or_404(Category, pk=pk, user_id=user_id)
             serializer = CategorySerializer(category)
@@ -105,10 +106,46 @@ class CategoriesViewSet(APIView):
 
 ### Learn
 class LearnViewSet(APIView):
-    def get(self, request, id, *args, **kwargs):
-        learn = Learn.objects.filter(category=id)
+    def get(self, request, category_id=None, pk=None, *args, **kwargs):
+        # If pk is provided, return a specific Learn object by its primary key
+        if pk is not None:
+            learn = get_object_or_404(Learn, pk=pk)
+            serializer = LearnSerializer(learn)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # If category_id is provided, filter Learn objects by category_id
+        if category_id is not None:
+            learn = Learn.objects.filter(category=category_id)
+            serializer = LearnSerializer(learn, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # If neither is provided, return all Learn objects (optional)
+        learn = Learn.objects.all()
         serializer = LearnSerializer(learn, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        # Create a new Learn object
+        serializer = LearnSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk, *args, **kwargs):
+        # Update an existing Learn object by primary key
+        learn = get_object_or_404(Learn, pk=pk)
+        serializer = LearnSerializer(learn, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, *args, **kwargs):
+        # Delete a specific Learn object by primary key
+        learn = get_object_or_404(Learn, pk=pk)
+        learn.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 class LearnPageViewSet(APIView):
     def get(self, request, id, *args, **kwargs):

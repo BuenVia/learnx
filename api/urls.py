@@ -19,8 +19,9 @@ urlpatterns = [
     path('api/categories/<int:pk>/', views.CategoriesViewSet.as_view(), name='category-detail'),
     # path('api/category/<id>', views.CategoryViewSet.as_view()),
     # Learn
-    path('api/learn/<id>', views.LearnViewSet.as_view()),
-    path('api/learn/page/<id>', views.LearnPageViewSet.as_view()),
+    path('api/learn/', views.LearnViewSet.as_view(), name='learn-list'),  # To get all Learn objects (optional)
+    path('api/learn/category/<int:category_id>/', views.LearnViewSet.as_view(), name='learn-by-category'),  # To get Learn objects by category
+    path('api/learn/<int:pk>/', views.LearnViewSet.as_view(), name='learn-detail'),  # To get/update/delete a specific Learn object
     # Practice
     path('api/practice/all/<id>', views.PracticeSectionsViewSet.as_view()),
     path('api/practice/<id>', views.LearnViewSet.as_view()),
