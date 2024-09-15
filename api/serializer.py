@@ -35,13 +35,13 @@ class CategorySerializer(serializers.ModelSerializer):
 class LearnSerializer(serializers.ModelSerializer):
     class Meta:
         model = Learn
-        fields = ['id', 'name', 'author', 'body', 'date_created', 'category', "user_id"]
+        fields = ['id', 'name', 'author', 'body', 'date_created', 'category_id', "user_id"]
 
 # Practice
 class PracticeSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PracticeSection
-        fields = ['id', 'name', 'instruction', 'category', "user_id"]
+        fields = ['id', 'name', 'instruction', 'category_id', "learn_id", "user_id"]
 
 class QuestionsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,8 +55,8 @@ class QuestionsSerializer(serializers.ModelSerializer):
             'option_two',
             'option_three',
             'feedback',
-            'category',
-            'practice_section',
+            'category_id',
+            'practice_section_id',
             'user_id'
         ]
 
@@ -64,5 +64,5 @@ class QuestionsSerializer(serializers.ModelSerializer):
 class TestDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestData
-        fields = ['id', 'date_taken', 'category', 'user_id']
+        fields = ['id', 'date_taken', 'category_id', 'user_id']
 

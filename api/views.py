@@ -147,18 +147,54 @@ class LearnViewSet(APIView):
         learn.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-class LearnPageViewSet(APIView):
-    def get(self, request, id, *args, **kwargs):
-        learn = Learn.objects.filter(id=id)
-        serializer = LearnSerializer(learn, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+# class LearnPageViewSet(APIView):
+#     def get(self, request, id, *args, **kwargs):
+#         learn = Learn.objects.filter(id=id)
+#         serializer = LearnSerializer(learn, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
     
 ### Practice
 class PracticeSectionsViewSet(APIView):
-    def get(self, request, id, *args, **kwargs):
-        psecs = PracticeSection.objects.filter(category=id)
+    def get(self, request, category_id=None, pk=None, *args, **kwargs):
+        # Get a specific PracticeSection object by its primary key
+        if pk is not None:
+            practice_section = get_object_or_404(PracticeSection, pk=pk)
+            serializer = PracticeSectionSerializer(practice_section)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # Get all PracticeSection objects filtered by category_id
+        if category_id is not None:
+            psecs = PracticeSection.objects.filter(category=category_id)
+            serializer = PracticeSectionSerializer(psecs, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # Get all PracticeSection objects if no category_id or pk is provided
+        psecs = PracticeSection.objects.all()
         serializer = PracticeSectionSerializer(psecs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        # Create a new PracticeSection object
+        serializer = PracticeSectionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk, *args, **kwargs):
+        # Update a specific PracticeSection object by its primary key
+        practice_section = get_object_or_404(PracticeSection, pk=pk)
+        serializer = PracticeSectionSerializer(practice_section, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, *args, **kwargs):
+        # Delete a specific PracticeSection object by its primary key
+        practice_section = get_object_or_404(PracticeSection, pk=pk)
+        practice_section.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class PracticeSectionViewSet(APIView):
     def get(self, request, id, *args, **kwargs):

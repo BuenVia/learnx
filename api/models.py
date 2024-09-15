@@ -48,7 +48,8 @@ class Learn(models.Model):
 class PracticeSection(models.Model):
     name = models.CharField(max_length=10)
     instruction = models.TextField(blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
+    learn_id = models.ForeignKey(Learn, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     
     class Meta:
@@ -65,8 +66,8 @@ class Questions(models.Model):
     option_two = models.CharField(max_length=255, blank=True)
     option_three = models.CharField(max_length=255, blank=True)
     feedback = models.CharField(max_length=255, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    practice_section = models.ForeignKey(PracticeSection, on_delete=models.CASCADE)
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
+    practice_section_id = models.ForeignKey(PracticeSection, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -78,7 +79,7 @@ class Questions(models.Model):
 # Test
 class TestData(models.Model):
     date_taken = models.DateTimeField(auto_now_add=False)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:

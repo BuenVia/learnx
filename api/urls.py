@@ -23,9 +23,14 @@ urlpatterns = [
     path('api/learn/category/<int:category_id>/', views.LearnViewSet.as_view(), name='learn-by-category'),  # To get Learn objects by category
     path('api/learn/<int:pk>/', views.LearnViewSet.as_view(), name='learn-detail'),  # To get/update/delete a specific Learn object
     # Practice
-    path('api/practice/all/<id>', views.PracticeSectionsViewSet.as_view()),
-    path('api/practice/<id>', views.LearnViewSet.as_view()),
-    path('api/questions/<id>', views.QuestionsViewSet.as_view()),
+
+    path('api/practice-sections/', views.PracticeSectionsViewSet.as_view(), name='practice-sections-list'),  # To get all PracticeSections or create a new one
+    path('api/practice-sections/category/<int:category_id>/', views.PracticeSectionsViewSet.as_view(), name='practice-sections-by-category'),  # To get PracticeSections by category
+    path('api/practice-sections/<int:pk>/', views.PracticeSectionsViewSet.as_view(), name='practice-section-detail'),  # To get/update/delete a specific PracticeSection
+
+    # path('api/practice/all/<id>', views.PracticeSectionsViewSet.as_view()),
+    # path('api/practice/<id>', views.LearnViewSet.as_view()),
+    # path('api/questions/<id>', views.QuestionsViewSet.as_view()),
     # Test
     path('api/test-data/<id>', views.LearnViewSet.as_view()),
 ]
