@@ -30,7 +30,7 @@ urlpatterns = [
 
     # path('api/practice/all/<id>', views.PracticeSectionsViewSet.as_view()),
     # path('api/practice/<id>', views.LearnViewSet.as_view()),
-    # path('api/questions/<id>', views.QuestionsViewSet.as_view()),
+    path('api/questions/<id>', views.QuestionsViewSet.as_view()),
     # Test
     path('api/test-data/<id>', views.LearnViewSet.as_view()),
 ]

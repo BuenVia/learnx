@@ -204,6 +204,7 @@ class PracticeSectionsViewSet(APIView):
 
 class QuestionsViewSet(APIView):
     def get(self, request, id, *args, **kwargs):
+        print(id)
         questions = Questions.objects.filter(practice_section=id)
         serializer = QuestionsSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
