@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     # 'rest_framework_simplejwt.token_blacklist',
+    'webapp.apps.WebappConfig',
     'api.apps.ApiConfig'
 ]
 
@@ -141,3 +142,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
