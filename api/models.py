@@ -1,19 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Subject
-# Category
-## Notes
-## Flash
-## Test
-
 class Subject(models.Model):
     name = models.CharField(max_length=90)
     description = models.CharField(max_length=255)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = "subject"
+        db_table = "subjects"
 
     def __str__(self) -> str:
         return f"Subject: {self.name}"
@@ -21,10 +15,10 @@ class Subject(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=90)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = "category"
+        db_table = "categorys"
 
     def __str__(self) -> str:
         return f"Category: {self.name}"
@@ -36,24 +30,22 @@ class Learn(models.Model):
     body = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     class Meta:
-        db_table = "learn"
+        db_table = "learns"
 
     def __str__(self) -> str:
         return f"Learn: {self.name}"
 
 # Practice
 class PracticeSection(models.Model):
-    name = models.CharField(max_length=10)
     instruction = models.TextField(blank=True)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
-    learn_id = models.ForeignKey(Learn, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    learn = models.ForeignKey(Learn, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     class Meta:
-        db_table = "practice_section"
+        db_table = "practice_sections"
 
     def __str__(self) -> str:
         return f"Practice Section: {self.name}"
@@ -66,9 +58,8 @@ class Questions(models.Model):
     option_two = models.CharField(max_length=255, blank=True)
     option_three = models.CharField(max_length=255, blank=True)
     feedback = models.CharField(max_length=255, blank=True)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
-    practice_section_id = models.ForeignKey(PracticeSection, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    practice_section = models.ForeignKey(PracticeSection, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "questions"
@@ -79,11 +70,11 @@ class Questions(models.Model):
 # Test
 class TestData(models.Model):
     date_taken = models.DateTimeField(auto_now_add=False)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    learn = models.ForeignKey(Learn, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = "test_data"
+        db_table = "test_datas"
 
     def __str__(self) -> str:
         return f"Test Data: {self.question}" 

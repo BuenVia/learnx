@@ -196,11 +196,11 @@ class PracticeSectionsViewSet(APIView):
         practice_section.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class PracticeSectionViewSet(APIView):
-    def get(self, request, id, *args, **kwargs):
-        psec = PracticeSection.objects.filter(id=id)
-        serializer = PracticeSectionSerializer(psec, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+# class PracticeSectionViewSet(APIView):
+#     def get(self, request, id, *args, **kwargs):
+#         psec = PracticeSection.objects.filter(id=id)
+#         serializer = PracticeSectionSerializer(psec, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class QuestionsViewSet(APIView):
     def get(self, request, id, *args, **kwargs):
