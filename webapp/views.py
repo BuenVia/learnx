@@ -51,3 +51,13 @@ def dashboard(request):
         context = {}
         context['username'] = request.user
         return render(request, 'webapp/dashboard.html', context=context)
+    
+@login_required(login_url="login")
+def account(request):
+    if request.user.is_authenticated:
+        # properties = Property.objects.filter(user_id=request.user, is_delete=False).all()
+        # business = Business.objects.filter()
+        context = {}
+        context['user'] = request.user
+        # context['properties'] = properties
+        return render(request, 'webapp/account.html', context=context)

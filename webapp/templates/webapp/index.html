@@ -1,9 +1,9 @@
-{% extends "webapp/base.html" %}
+{% include "webapp/partials/header.html" %}
 
 {% block content %}
 <div class="container text-center mt-5">
     <div class="welcome-text mb-4">
-        <h2>Welcome to the Health and Safety Portal</h2>
+        <h2>Welcome to the LearnX Portal</h2>
         <p>Please login or register to continue.</p>
     </div>
     <div class="d-grid gap-2 d-md-block">
@@ -13,3 +13,5 @@
 </div>
 
 {% endblock content %}
+
+{% include "webapp/partials/footer.html" %}

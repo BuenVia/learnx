@@ -1,5 +1,4 @@
-{% extends "webapp/base.html" %}
-
+{% include "webapp/partials/header.html" %}
 
 {% block content %}
 <div class="container text-center my-auto">
@@ -12,8 +11,10 @@
         <div class="d-grid gap-2 mt-3">
             <button type="submit" class="btn btn-secondary">Login</button>
         </div>
+        <a href="/register">Register</a>
+        <a href="/">Back</a>
     </form>
 </div>
 {% endblock content %}
 
-
+{% include "webapp/partials/footer.html" %}

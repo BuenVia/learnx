@@ -1,0 +1,25 @@
+{% extends "webapp/base.html" %}
+{% block content %}
+
+    <main class="col-md-9 col-lg-10 p-4">
+        <div class="card m-3 p-3">
+            <h2>Hello, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %} {{ user.first_name }}!</h2>
+            <div class="mb2">
+                <input type="text" value="{{ user.first_name }}"/>
+            </div>
+            <div class="mb2">
+                <input type="text" value="{{ user.last_name }}"/>
+            </div>
+            <div class="mb2">
+                <input type="text" value="{{ user.username }}"/>
+            </div>
+            <div class="mb2">
+                <input type="text" value="{{ user.email }}"/>
+            </div>
+            {% if business %}
+            
+            {% endif %}
+        </div>
+    </main>
+
+{% endblock content %}

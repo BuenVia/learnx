@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponse #type: ignore
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from rest_framework import status, generics #type: ignore
 from rest_framework.views import APIView #type: ignore
 from rest_framework.response import Response #type: ignore
@@ -11,7 +11,7 @@ from .serializer import SubjectSerializer, CategorySerializer, LearnSerializer, 
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Welcome to the LangX API...")
+    return redirect('/')
 
 ## Users
 class UserViewSet(generics.CreateAPIView):
