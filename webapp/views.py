@@ -1,38 +1,53 @@
-from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth import login
-from django.contrib.auth.models import User
-from django.contrib.auth.views import LoginView
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import auth
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .forms import CreateUserForm, LoginForm
 
-from .forms import LoginForm, RegisterForm
-
-from api.models import Subject
-
-def home_view(request):
-    subjects = Subject.objects.filter(user_id=request.user.id)
-    context = {"subjects": subjects}
-    return render(request, 'webapp/home.html', context=context)
-
-def register_view(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)  # Log the user in immediately after registration
-            return redirect('home')  # Redirect to the homepage or dashboard after registration
+# Create your views here.
+def index(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
     else:
-        form = RegisterForm()
-    
-    return render(request, 'webapp/register.html', {'form': form})
+        return render(request, 'webapp/index.html')
+
+def register(request):
+    user_form = CreateUserForm()
+    if request.method == "POST":
+        user_form = CreateUserForm(request.POST)
+        if user_form.is_valid():
+            user_form.save()
+            return redirect("login")
+    context = {}
+    context['user_form'] = user_form
+    return render(request, 'webapp/register.html', context=context)
 
 
-@login_required
+def login(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+    else:
+        form = LoginForm()
+        if request.method == "POST":
+            form = LoginForm(request, data=request.POST)
+            if form.is_valid():
+                username = request.POST.get('username')
+                password = request.POST.get('password')
+                user = authenticate(request, username=username, password=password)
+                if user is not None:
+                    auth.login(request, user)
+                    return redirect("dashboard")
+        context = {'loginform': form}
+        return render(request, 'webapp/login.html', context=context)
+
+def logout(request):
+    auth.logout(request)
+    return redirect("index")
+
+@login_required(login_url="login")
 def dashboard(request):
-    return HttpResponse("Dashboard")
-
-class CustomLoginView(LoginView):
-    form_class = LoginForm
-    template_name = 'webapp/login.html'
-
-    def get_success_url(self):
-        return redirect('home').url  # Redirect to the homepage or dashboard after login
+    if request.user.is_authenticated:
+        user = request.user
+        context = {}
+        context['username'] = request.user
+        return render(request, 'webapp/dashboard.html', context=context)

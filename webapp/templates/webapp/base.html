@@ -1,0 +1,19 @@
+{% include "webapp/partials/header.html" %}
+    
+<div class="container-fluid">
+    <div class="row">
+
+    {% include "webapp/partials/sidebar.html" %}
+    
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock content %}
+
+    </div>
+</div>
+
+{% include "webapp/partials/footer.html" %}
