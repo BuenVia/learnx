@@ -8,7 +8,6 @@ from .forms import LoginForm, RegisterForm
 
 from api.models import Subject
 
-@login_required
 def home_view(request):
     subjects = Subject.objects.filter(user_id=request.user.id)
     context = {"subjects": subjects}
@@ -25,6 +24,11 @@ def register_view(request):
         form = RegisterForm()
     
     return render(request, 'webapp/register.html', {'form': form})
+
+
+@login_required
+def dashboard(request):
+    return HttpResponse("Dashboard")
 
 class CustomLoginView(LoginView):
     form_class = LoginForm
